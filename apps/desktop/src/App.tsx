@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Component, createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { api, eventStreamUrl, initToken, type ApprovalView, type Bootstrap } from "./api.js";
 import Home from "./pages/Home.js";
 import Assistant from "./pages/Assistant.js";
@@ -37,6 +37,40 @@ interface AppState {
 
 const Ctx = createContext<AppState>(null as unknown as AppState);
 export const useApp = () => useContext(Ctx);
+
+class AppErrorBoundary extends Component<
+  { children: ReactNode },
+  { error: Error | null }
+> {
+  override state = { error: null };
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+  override componentDidCatch(error: Error) {
+    console.error("[AI Repeat] App crash:", error.message);
+  }
+  override render() {
+    if (this.state.error) {
+      return (
+        <div style={{ padding: 40, fontFamily: "sans-serif", direction: "rtl" }}>
+          <h1>AI Repeat</h1>
+          <div style={{ background: "#fdeceb", border: "1px solid #f5c6cb", borderRadius: 8, padding: 16, marginBottom: 16 }}>
+            حدث خطأ غير متوقع — اضغط إعادة التشغيل.
+            <br />
+            <code style={{ fontSize: 12 }}>{(this.state.error as Error)?.message.slice(0, 300)}</code>
+          </div>
+          <button
+            style={{ padding: "10px 24px", background: "#1264a3", color: "white", border: 0, borderRadius: 8, cursor: "pointer", fontSize: 16 }}
+            onClick={() => this.setState({ error: null })}
+          >
+            إعادة التشغيل
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function App() {
   const [boot, setBoot] = useState<Bootstrap | null>(null);
@@ -118,11 +152,12 @@ export default function App() {
     setPage("tasks");
   }, []);
 
-  const lang: Lang = boot?.settings.language === "en" ? "en" : "ar";
+  const lang: Lang = boot?.settings?.language === "en" ? "en" : "ar";
   useEffect(() => applyDirection(lang), [lang]);
   const state: AppState = { boot, refresh, events, connected, error, openTasksPage, lang };
 
   return (
+    <AppErrorBoundary>
     <Ctx.Provider value={state}>
       <div className="app">
         <nav className="sidebar" aria-label="التنقل الرئيسي">
@@ -164,6 +199,7 @@ export default function App() {
         {approval && <ApprovalDialog approval={approval} onClose={() => setApproval(null)} />}
       </div>
     </Ctx.Provider>
+    </AppErrorBoundary>
   );
 }
 

@@ -20,7 +20,7 @@ export default function Home({ lang }: { lang: Lang }) {
         /* agent restarting */
       }
     })();
-  }, [boot?.tasks.length]);
+  }, [boot?.tasks?.length]);
 
   return (
     <div>
@@ -35,13 +35,13 @@ export default function Home({ lang }: { lang: Lang }) {
             {boot?.browserAvailable ? t(lang, "home.step1.ready") : t(lang, "home.step1.missing")}
           </li>
           <li>
-            {boot?.settings.model.hasApiKey ? "✓" : "☐"} {t(lang, "home.step2")}{" "}
-            {boot?.settings.model.hasApiKey ? t(lang, "home.step2.set") : t(lang, "home.step2.missing")}{" "}
+            {boot?.settings?.model?.hasApiKey ? "✓" : "☐"} {t(lang, "home.step2")}{" "}
+            {boot?.settings?.model?.hasApiKey ? t(lang, "home.step2.set") : t(lang, "home.step2.missing")}{" "}
             <span className="sub" style={{ margin: 0 }}>{t(lang, "home.step2.optional")}</span>
           </li>
           <li>
-            {(boot?.tasks.length ?? 0) > 0 ? "✓" : "☐"} {t(lang, "home.step3")}{" "}
-            {(boot?.tasks.length ?? 0) > 0 ? t(lang, "home.step3.done") : t(lang, "home.step3.todo")}
+            {(boot?.tasks?.length ?? 0) > 0 ? "✓" : "☐"} {t(lang, "home.step3")}{" "}
+            {(boot?.tasks?.length ?? 0) > 0 ? t(lang, "home.step3.done") : t(lang, "home.step3.todo")}
           </li>
         </ol>
       </div>
@@ -60,7 +60,7 @@ export default function Home({ lang }: { lang: Lang }) {
           متصفح Chromium الخاص بالتطبيق مش متسطب. شغّل مرة واحدة فقط: <code>npx playwright install chromium</code>
         </div>
       )}
-      {!boot?.settings.model.hasApiKey && (
+      {!boot?.settings?.model?.hasApiKey && (
         <div className="notice">{t(lang, "home.noApiKey")}</div>
       )}
 
@@ -74,7 +74,7 @@ export default function Home({ lang }: { lang: Lang }) {
           <span>{t(lang, "home.kpi.attention")}</span>
         </div>
         <div className="metric">
-          <b>{boot ? boot.workflows.length : 0}</b>
+          <b>{boot?.workflows?.length ?? 0}</b>
           <span>{t(lang, "home.kpi.skills")}</span>
         </div>
         {boot?.kpis.verifiedSuccessRate != null && (

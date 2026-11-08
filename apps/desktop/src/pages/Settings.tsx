@@ -214,7 +214,7 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
 
         <h2>{t(lang, "settings.apiKey")}</h2>
         <p className="sub">
-          الحالة: {boot?.settings.model.hasApiKey ? t(lang, "settings.keySaved") : t(lang, "settings.noKey")}
+          الحالة: {boot?.settings?.model?.hasApiKey ? t(lang, "settings.keySaved") : t(lang, "settings.noKey")}
         </p>
         <div className="row">
           <input
@@ -403,8 +403,8 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
           <li>حد التوكنز لكل مهمة: {boot?.settings.budgets.maxTokensPerRun}</li>
           <li>مدة الاحتفاظ بلقطات الشاشة (اختيارية): {boot?.settings.retentionDays} يوم — لقطات الشاشة مطفأة افتراضيًا</li>
           <li>
-            الاستهلاك المُقاس من المزود: {boot?.usage.requests ?? 0} طلب —{" "}
-            {(boot?.usage.inputTokens ?? 0) + (boot?.usage.outputTokens ?? 0)} توكن
+            الاستهلاك المُقاس من المزود: {boot?.usage?.requests ?? 0} طلب —{" "}
+            {(boot?.usage?.inputTokens ?? 0) + (boot?.usage?.outputTokens ?? 0)} توكن
           </li>
         </ul>
       </div>
