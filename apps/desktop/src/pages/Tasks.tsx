@@ -4,7 +4,7 @@ import { api, type TaskDetail, type TaskSummary } from "../api.js";
 import WorkflowEditor from "../components/WorkflowEditor.js";
 import { mergeRepair, parseDraft, type DraftWorkflow } from "../lib/step-editor.js";
 import { csvPreview, type CsvPreview } from "../lib/csv.js";
-import type { Lang } from "../lib/i18n.js";
+import { t, type Lang } from "../lib/i18n.js";
 
 function ArtifactCsvPreview({ path }: { path: string }) {
   const [state, setState] = useState<{ loading: boolean; preview?: CsvPreview; error?: string }>({ loading: true });
@@ -229,16 +229,16 @@ export default function Tasks({ focusTaskId, lang }: { focusTaskId?: string; lan
         {detail.error && <div className="notice bad">{detail.error}</div>}
 
         <div className="row" style={{ marginBottom: 14 }}>
-          <button className="ghost" onClick={() => act(detail.id, "pause")}>إيقاف مؤقت</button>
-          <button className="ghost" onClick={() => act(detail.id, "resume")}>استكمال</button>
-          <button className="danger" onClick={() => act(detail.id, "cancel")}>إيقاف فورًا</button>
+          <button className="ghost" onClick={() => act(detail.id, "pause")}>{t(lang, 'tasks.pauseBtn')}</button>
+          <button className="ghost" onClick={() => act(detail.id, "resume")}>{t(lang, 'tasks.resumeBtn')}</button>
+          <button className="danger" onClick={() => act(detail.id, "cancel")}>{t(lang, 'tasks.stopNow')}</button>
           {(detail.state === "failed" || detail.state === "cancelled") && (
-            <button className="ghost" onClick={() => retry(detail.id)}>إعادة المحاولة (تشغيل جديد)</button>
+            <button className="ghost" onClick={() => retry(detail.id)}>{t(lang, 'tasks.retry')}</button>
           )}
         </div>
 
         <div className="card">
-          <h2 style={{ marginTop: 0 }}>الخطوات</h2>
+          <h2 style={{ marginTop: 0 }}>{t(lang, "tasks.steps")}</h2>
           <ul className="timeline">
             {detail.steps.map((s) => (
               <li key={s.stepId}>
@@ -250,7 +250,7 @@ export default function Tasks({ focusTaskId, lang }: { focusTaskId?: string; lan
                 {s.error && <span className="fail"> — {s.error.slice(0, 120)}</span>}
                 {typeof s.evidence?.screenshot === "string" && (
                   <a href={api.artifactUrl(s.evidence.screenshot as string)} target="_blank" rel="noreferrer">
-                    <button className="ghost small">لقطة الفشل</button>
+                    <button className="ghost small">{t(lang, 'tasks.shotOfFailure')}</button>
                   </a>
                 )}
                 {s.state === "failed" && !repair && !repairWf && (
@@ -269,7 +269,7 @@ export default function Tasks({ focusTaskId, lang }: { focusTaskId?: string; lan
 
         {detail.verifications.length > 0 && (
           <div className="card">
-            <h2 style={{ marginTop: 0 }}>تقرير التحقق</h2>
+            <h2 style={{ marginTop: 0 }}>{t(lang, "tasks.verificationReport")}</h2>
             <ul className="timeline">
               {detail.verifications.map((v, i) => (
                 <li key={i}>
@@ -292,19 +292,19 @@ export default function Tasks({ focusTaskId, lang }: { focusTaskId?: string; lan
         )}
         {Object.keys(detail.outputs).length > 0 && (
           <div className="card">
-            <h2 style={{ marginTop: 0 }}>النتائج</h2>
+            <h2 style={{ marginTop: 0 }}>{t(lang, "tasks.results")}</h2>
             {typeof detail.outputs.export_path === "string" && (
               <>
                 <div className="row" style={{ marginBottom: 10 }}>
                   <a href={api.artifactUrl(detail.outputs.export_path as string)} download>
-                    <button className="ghost small">تنزيل الملف الناتج{detail.outputs.export_rows != null ? ` (${String(detail.outputs.export_rows)} صف)` : ""}</button>
+                    <button className="ghost small">{t(lang, 'tasks.downloadOutput')}{detail.outputs.export_rows != null ? ` (${String(detail.outputs.export_rows)} صف)` : ""}</button>
                   </a>
                 </div>
                 {showPreview ? (
                   <ArtifactCsvPreview path={detail.outputs.export_path as string} />
                 ) : (
                   <button className="ghost small" onClick={() => setShowPreview(true)}>
-                    عرض أول 10 صفوف
+                    {t(lang, 'tasks.preview10')}
                   </button>
                 )}
               </>
@@ -316,7 +316,7 @@ export default function Tasks({ focusTaskId, lang }: { focusTaskId?: string; lan
         )}
 
         <div className="card">
-          <h2 style={{ marginTop: 0 }}>المدخلات (مُنقّاة)</h2>
+          <h2 style={{ marginTop: 0 }}>{t(lang, "tasks.inputsSanitized")}</h2>
           <pre className="mono">{JSON.stringify(detail.inputs, null, 2)}</pre>
           {!connected && <p className="sub">التحديث الحي متوقف — الخدمة المحلية غير متصلة.</p>}
         </div>
@@ -326,17 +326,17 @@ export default function Tasks({ focusTaskId, lang }: { focusTaskId?: string; lan
 
   return (
     <div>
-      <h1>المهام</h1>
-      <p className="sub">كل التشغيلات السابقة والحالية مع حالتها الحقيقية — مفيش حالة نجاح مزيفة.</p>
+      <h1>{t(lang, "tasks.title")}</h1>
+      <p className="sub">{t(lang, "tasks.subtitle")}</p>
       {err && <div className="notice bad">{err}</div>}
       <table className="list">
         <thead>
           <tr>
-            <th>المهمة</th>
-            <th>الحالة</th>
-            <th>الخطوات</th>
-            <th>التحقق</th>
-            <th>أُنشئت</th>
+            <th>{t(lang, 'tasks.col.task')}</th>
+            <th>{t(lang, 'tasks.col.state')}</th>
+            <th>{t(lang, 'tasks.col.steps')}</th>
+            <th>{t(lang, 'tasks.col.verify')}</th>
+            <th>{t(lang, 'tasks.col.created')}</th>
             <th></th>
           </tr>
         </thead>

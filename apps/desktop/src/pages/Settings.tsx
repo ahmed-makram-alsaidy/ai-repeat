@@ -5,7 +5,7 @@ import { speechRecognitionAvailable, ttsAvailable, voiceFlags } from "../lib/voi
 import { disableTaskNotifications, enableTaskNotifications, notificationPermission } from "../lib/notify.js";
 import UiaSection from "../components/UiaSection.js";
 import { useRef } from "react";
-import type { Lang } from "../lib/i18n.js";
+import { t, type Lang } from "../lib/i18n.js";
 
 export default function SettingsPage({ lang }: { lang: Lang }) {
   const { boot, refresh, events } = useApp();
@@ -162,14 +162,14 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
       )}
 
       <div className="card">
-        <h2 style={{ marginTop: 0 }}>اتصال النموذج</h2>
+        <h2 style={{ marginTop: 0 }}>{t(lang, "settings.model")}</h2>
         <div className="notice">
           لما تستخدم نموذج خارجي، جزء من نص المهمة (مش كلمات السر ولا الكوكيز) ممكن يتبعت لمزود النموذج. المفتاح محفوظ
           في مخزن بيانات اعتماد ويندوز (DPAPI) — مش في قاعدة البيانات ولا في المتصفح.
         </div>
         <div className="grid2">
           <label className="f">
-            <span>المزود</span>
+            <span>{t(lang, "settings.provider")}</span>
             <select value={model.provider} onChange={(e) => setModel({ ...model, provider: e.target.value })}>
               <option value="zai">Z.ai</option>
               <option value="openai-compatible">متوافق OpenAI (مخصص)</option>
@@ -177,15 +177,15 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
             </select>
           </label>
           <label className="f">
-            <span>معرّف الموديل</span>
+            <span>{t(lang, "settings.modelId")}</span>
             <input className="mono" value={model.modelId} onChange={(e) => setModel({ ...model, modelId: e.target.value })} />
           </label>
           <label className="f">
-            <span>Base URL</span>
+            <span>{t(lang, "settings.baseUrl")}</span>
             <input className="mono" value={model.baseUrl} onChange={(e) => setModel({ ...model, baseUrl: e.target.value })} />
           </label>
           <label className="f">
-            <span>المهلة (ثواني)</span>
+            <span>{t(lang, "settings.timeout")}</span>
             <input
               type="number"
               value={model.timeoutMs}
@@ -208,13 +208,13 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
               await refresh();
             })}
           >
-            احفظ الإعدادات
+            {t(lang, "settings.saveModel")}
           </button>
         </div>
 
-        <h2>مفتاح API</h2>
+        <h2>{t(lang, "settings.apiKey")}</h2>
         <p className="sub">
-          الحالة: {boot?.settings.model.hasApiKey ? "مفتاح محفوظ ✓ (مخفي)" : "مفيش مفتاح محفوظ"}
+          الحالة: {boot?.settings.model.hasApiKey ? t(lang, "settings.keySaved") : t(lang, "settings.noKey")}
         </p>
         <div className="row">
           <input
@@ -223,7 +223,7 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
             type="password"
             value={key}
             onChange={(e) => setKey(e.target.value)}
-            placeholder="الصق المفتاح هنا — مش هيُخزن في أي مكان تاني"
+            placeholder={t(lang, "settings.keyPlaceholder")}
           />
           <button
             className="primary"
@@ -234,7 +234,7 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
               await refresh();
             })}
           >
-            احفظ المفتاح
+            {t(lang, "settings.saveKey")}
           </button>
         </div>
         <div className="row" style={{ marginTop: 12 }}>
@@ -251,36 +251,36 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
               );
             })}
           >
-            اختبر الاتصال
+            {t(lang, "settings.testConnection")}
           </button>
           {testResult && <span>{testResult}</span>}
         </div>
       </div>
 
       <div className="card">
-        <h2 style={{ marginTop: 0 }}>الصوت (اختياري)</h2>
+        <h2 style={{ marginTop: 0 }}>{t(lang, "settings.voice")}</h2>
         <p className="sub">
           مفيش استماع خلفي أبدًا — التسجيل بيشتغل بس لما تضغط «اضغط وتكلم»، والنطق لملخصات المهام اختياري.
         </p>
 
-        <h3 style={{ marginBottom: 6 }}>محرك الإدخال الصوتي (STT)</h3>
+        <h3 style={{ marginBottom: 6 }}>{t(lang, "settings.sttEngine")}</h3>
         <div className="row" style={{ alignItems: "flex-end" }}>
           <label className="f" style={{ maxWidth: 200 }}>
             <span>المحرك</span>
             <select value={sttEngine} onChange={(e) => setSttEngine(e.target.value)}>
-              <option value="web-speech">مدمج (Web Speech)</option>
-              <option value="whisper-local">whisper محلي</option>
-              <option value="none">بدون</option>
+              <option value="web-speech">{t(lang, "settings.stt.builtin")}</option>
+              <option value="whisper-local">{t(lang, "settings.stt.whisper")}</option>
+              <option value="none">{t(lang, "settings.stt.none")}</option>
             </select>
           </label>
           {sttEngine === "whisper-local" && (
             <>
               <label className="f" style={{ flex: 1, minWidth: 220 }}>
-                <span>مسار whisper-cli.exe</span>
+                <span>{t(lang, "settings.stt.binPath")}</span>
                 <input className="mono" value={sttBin} onChange={(e) => setSttBin(e.target.value)} placeholder="…\whisper.cpp\Release\whisper-cli.exe" />
               </label>
               <label className="f" style={{ flex: 1, minWidth: 220 }}>
-                <span>مسار الموديل (ggml .bin)</span>
+                <span>{t(lang, "settings.stt.modelPath")}</span>
                 <input className="mono" value={sttModel} onChange={(e) => setSttModel(e.target.value)} placeholder="…\models\ggml-base.bin" />
               </label>
             </>
@@ -293,7 +293,7 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
               await refresh();
             })}
           >
-            احفظ محرك الصوت
+            {t(lang, "settings.saveStt")}
           </button>
         </div>
         <p className="sub" style={{ marginTop: 4 }}>
@@ -310,7 +310,7 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
                 setSttOn(e.target.checked);
               }}
             />
-            إدخال صوتي (اضغط وتكلم) في المساعد
+            {t(lang, "settings.sttToggle")}
           </span>
         </label>
         <p className="sub" style={{ margin: "0 0 10px" }}>
@@ -327,14 +327,14 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
                 setTtsOn(e.target.checked);
               }}
             />
-            نطق ملخص عند انتهاء المهمة (أصوات ويندوز المحلية)
+            {t(lang, "settings.ttsToggle")}
           </span>
         </label>
         <p className="sub" style={{ margin: 0 }}>
           النطق: {ttsAvailable() ? "متاح ✓" : "غير متاح"} — الأصوات العربية المتسطة: {arabicVoices}
         </p>
 
-        <h2>إشعارات سطح المكتب</h2>
+        <h2>{t(lang, "settings.notifications")}</h2>
         <label className="f">
           <span>
             <input
@@ -353,7 +353,7 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
                 }
               }}
             />
-            إشعار عند انتهاء كل مهمة (اكتمال/فشل/إلغاء)
+            {t(lang, "settings.notifyToggle")}
           </span>
         </label>
         <p className="sub" style={{ margin: 0 }}>
@@ -362,7 +362,7 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
       </div>
 
       <div className="card">
-        <h2 style={{ marginTop: 0 }}>الأدلة والاحتفاظ</h2>
+        <h2 style={{ marginTop: 0 }}>{t(lang, "settings.evidence")}</h2>
         <label className="f">
           <span>
             <input
@@ -378,7 +378,7 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
           </span>
         </label>
         <label className="f" style={{ maxWidth: 220 }}>
-          <span>مدة الاحتفاظ (يوم)</span>
+          <span>{t(lang, "settings.retention")}</span>
           <input
             type="number"
             min={1}
@@ -393,7 +393,7 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
       </div>
 
       <div className="card">
-        <h2 style={{ marginTop: 0 }}>الأمان والخصوصية</h2>
+        <h2 style={{ marginTop: 0 }}>{t(lang, "settings.security")}</h2>
         <ul style={{ lineHeight: 2, color: "var(--muted)" }}>
           <li>
             مساحة العمل المسموحة للملفات: <code className="mono">{boot?.settings.workspaceRoot}</code>
@@ -410,7 +410,7 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
       </div>
 
       <div className="card">
-        <h2 style={{ marginTop: 0 }}>نسخة احتياطية واستعادة</h2>
+        <h2 style={{ marginTop: 0 }}>{t(lang, "settings.backup")}</h2>
         <div className="notice">
           الملف بيحتوي: <strong>المهارات + نسخها + سجل المهام + الجداول</strong>. مش بيحتوي:
           <strong> مفاتيح الـAPI (في مخزن ويندوز) ولا بروفايلات المتصفح</strong>. الجداول المستوردة بتوصل موقوفة
@@ -418,7 +418,7 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
         </div>
         <div className="row">
           <a href={api.backupUrl()} download>
-            <button className="ghost">نزّل النسخة الاحتياطية</button>
+            <button className="ghost">{t(lang, "settings.backupDownload")}</button>
           </a>
           <input
             ref={backupInput}
@@ -453,7 +453,7 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
       <UiaSection />
 
       <div className="card">
-        <h2 style={{ marginTop: 0 }}>حدود معروفة (بشفافية)</h2>
+        <h2 style={{ marginTop: 0 }}>{t(lang, "settings.knownLimits")}</h2>
         <ul style={{ lineHeight: 2, color: "var(--muted)" }}>
           <li>التطبيق مش بيتحكم في ماوس/كيبورد ويندوز — التنفيذ في متصفح مستقل فقط.</li>
           <li>المهام شغالة بس والجهاز شغّال — مفيش تنفيذ سحابي في النسخة دي.</li>

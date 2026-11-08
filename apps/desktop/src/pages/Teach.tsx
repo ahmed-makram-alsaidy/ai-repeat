@@ -3,7 +3,7 @@ import { useApp } from "../App.js";
 import { api } from "../api.js";
 import WorkflowEditor from "../components/WorkflowEditor.js";
 import { parseDraft, type DraftWorkflow } from "../lib/step-editor.js";
-import type { Lang } from "../lib/i18n.js";
+import { t, type Lang } from "../lib/i18n.js";
 
 export default function Teach({ lang }: { lang: Lang }) {
   const { refresh } = useApp();
@@ -47,8 +47,8 @@ export default function Teach({ lang }: { lang: Lang }) {
 
   return (
     <div>
-      <h1>علّمني مهمة</h1>
-      <p className="sub">هنستخدم متصفح المساعد، مش الماوس بتاعك.</p>
+      <h1>{t(lang, "teach.title")}</h1>
+      <p className="sub">{t(lang, "teach.subtitle")}</p>
 
       <div className="notice">
         مش بنسجل كلمات السر أو رموز التحقق. هنسألك عنها وقت الحاجة من غير ما نحفظها. حاليًا التسجيل بيدعم: فتح صفحات،
