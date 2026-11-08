@@ -1,0 +1,56 @@
+{
+  "name": "ai-repeat",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Arabic-first local AI coworker that teaches recurring browser tasks and re-runs them with deterministic verification",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "services/*",
+    "apps/*",
+    "fixtures/*"
+  ],
+  "engines": {
+    "node": ">=22.14"
+  },
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "agent": "tsx services/agent/src/main.ts",
+    "demo-site": "tsx fixtures/demo-site/server.ts",
+    "ui": "npm run dev -w apps/desktop",
+    "app": "npm run app -w apps/desktop",
+    "app:build": "npm run app:build -w apps/desktop",
+    "smoke": "tsx scripts/smoke-demo.ts",
+    "agent:sidecar": "node scripts/build-sidecar.mjs",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.4",
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.0.0",
+    "postject": "^1.0.0-alpha.6",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^3.0.0"
+  },
+  "dependencies": {
+    "zod": "^4.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ai-repeat/ai-repeat.git"
+  },
+  "keywords": [
+    "automation",
+    "browser",
+    "playwright",
+    "arabic",
+    "rtl",
+    "tauri",
+    "workflow",
+    "productivity"
+  ]
+}

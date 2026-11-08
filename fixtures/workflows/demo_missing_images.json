@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "0.1",
+  "id": "demo_missing_images",
+  "name": "اكتشاف المنتجات الناقصة صور وتصديرها CSV",
+  "description": "Demo (G1): يفتح صفحة المنتجات في سيرفر التجربة المحلي، يصفّي الصور الناقصة، يقرأ الجدول، يصدّر CSV في مجلد demo-output داخل مساحة العمل، ويتحقق من عدد الصفوف ووجود الملف.",
+  "allowedDomains": ["127.0.0.1", "localhost"],
+  "inputs": [],
+  "steps": [
+    {
+      "id": "go_products",
+      "action": "navigate",
+      "url": "http://127.0.0.1:4177/products",
+      "risk": "read",
+      "summary": "فتح صفحة المنتجات"
+    },
+    {
+      "id": "filter_missing",
+      "action": "click",
+      "locator": { "strategy": "role", "value": "button", "name": "ناقص صور" },
+      "risk": "read",
+      "summary": "تصفية المنتجات الناقصة صور"
+    },
+    {
+      "id": "extract_missing",
+      "action": "extract_table",
+      "locator": { "strategy": "testid", "value": "missing-images-table" },
+      "outputKey": "missing_images",
+      "risk": "read",
+      "summary": "قراءة جدول الناقص صور"
+    },
+    {
+      "id": "export_csv",
+      "action": "export_csv",
+      "outputKey": "missing_images",
+      "path": "demo-output/missing-images.csv",
+      "risk": "local_write",
+      "summary": "تجهيز ملف CSV في مجلد demo-output"
+    }
+  ],
+  "verification": [
+    { "kind": "element_visible", "target": "[data-testid='missing-images-table']" },
+    { "kind": "table_row_count", "target": "[data-testid='missing-images-table'] tbody tr", "expectedCount": 4 },
+    { "kind": "file_exists", "target": "demo-output/missing-images.csv" },
+    { "kind": "text_contains", "target": "demo-output/missing-images.csv", "expectedText": "SKU-001" }
+  ],
+  "policy": { "autoApproveRead": true, "autoApproveLocalWrite": true }
+}

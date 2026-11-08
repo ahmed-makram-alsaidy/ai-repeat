@@ -1,0 +1,19 @@
+{
+  "name": "@ai-repeat/agent",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc --noEmit",
+    "start": "tsx src/main.ts"
+  },
+  "dependencies": {
+    "@ai-repeat/contracts": "0.1.0",
+    "@ai-repeat/llm": "0.1.0",
+    "@ai-repeat/security": "0.1.0",
+    "@ai-repeat/workflows": "0.1.0",
+    "express": "^5.1.0",
+    "playwright-core": "^1.56.0",
+    "zod": "^4.0.0"
+  }
+}

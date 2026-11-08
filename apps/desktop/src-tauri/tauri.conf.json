@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "AI Repeat",
+  "version": "0.1.0",
+  "identifier": "com.airepeat.desktop",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "AI Repeat — علّمه شغلك مرة، وخليه يشتغل معاك",
+        "width": 1280,
+        "height": 820,
+        "minWidth": 940,
+        "minHeight": 600
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; connect-src 'self' http://127.0.0.1:8757 http://localhost:5173 ipc: http://ipc.localhost; img-src 'self' data:; style-src 'self' 'unsafe-inline'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "icon": ["icons/icon.ico"],
+    "externalBin": ["binaries/ai-repeat-agent"],
+    "resources": [],
+    "copyright": "AI Repeat Contributors",
+    "license": "MIT"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "0.1",
+  "id": "demo_draft_transfer",
+  "name": "إنشاء مسودة طلب وانتظار موافقتك",
+  "description": "Demo (G2): يعبّي نموذج مسودة طلب من مدخلاتك، يقف قبل الإرسال ويطلب موافقتك بالقيم بالظبط. السيرفر التجريبي بيمنع التكرار بنفس البيانات (dedupe) بأرقام تأكيد ثابتة.",
+  "allowedDomains": ["127.0.0.1", "localhost"],
+  "inputs": [
+    { "name": "customer", "type": "string", "required": true, "description": "اسم العميل" },
+    { "name": "item", "type": "string", "required": true, "description": "اسم الصنف" },
+    { "name": "quantity", "type": "number", "required": true, "description": "الكمية" }
+  ],
+  "steps": [
+    {
+      "id": "go_form",
+      "action": "navigate",
+      "url": "http://127.0.0.1:4177/drafts/new",
+      "risk": "read",
+      "summary": "فتح نموذج مسودة طلب"
+    },
+    {
+      "id": "fill_customer",
+      "action": "fill",
+      "locator": { "strategy": "label", "value": "اسم العميل" },
+      "value": "{{customer}}",
+      "risk": "read",
+      "summary": "كتابة اسم العميل"
+    },
+    {
+      "id": "fill_item",
+      "action": "fill",
+      "locator": { "strategy": "label", "value": "اسم الصنف" },
+      "value": "{{item}}",
+      "risk": "read",
+      "summary": "كتابة اسم الصنف"
+    },
+    {
+      "id": "fill_quantity",
+      "action": "fill",
+      "locator": { "strategy": "label", "value": "الكمية" },
+      "value": "{{quantity}}",
+      "risk": "read",
+      "summary": "كتابة الكمية"
+    },
+    {
+      "id": "submit_draft",
+      "action": "click",
+      "locator": { "strategy": "role", "value": "button", "name": "إرسال الطلب" },
+      "risk": "external_write",
+      "requiresApproval": true,
+      "summary": "إرسال المسودة (يتطلب موافقتك)"
+    }
+  ],
+  "verification": [
+    { "kind": "element_visible", "target": "[data-testid='draft-confirmation']" },
+    { "kind": "text_contains", "expectedText": "تم حفظ المسودة" }
+  ],
+  "policy": { "autoApproveRead": true, "autoApproveLocalWrite": true }
+}

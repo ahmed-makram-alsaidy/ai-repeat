@@ -1,0 +1,24 @@
+[package]
+name = "ai-repeat-desktop"
+version = "0.1.0"
+license = "MIT"
+description = "AI Repeat — Arabic-first desktop shell for the local agent service"
+edition = "2021"
+
+# See tauri v2 docs: the shell owns the window (WebView2) and secure IPC only;
+# all automation logic stays in the Node agent service (services/agent).
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-shell = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

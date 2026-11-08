@@ -1,0 +1,9 @@
+{
+  "name": "@ai-repeat/demo-site",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "tsx server.ts"
+  }
+}

@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.local-dev/
+build/
+.env
+apps/desktop/.session-token
+apps/desktop/src-tauri/target/
+apps/desktop/src-tauri/binaries/*.exe
+*.log
+.DS_Store

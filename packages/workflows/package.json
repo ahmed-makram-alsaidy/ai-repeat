@@ -1,0 +1,16 @@
+{
+  "name": "@ai-repeat/workflows",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ai-repeat/contracts": "0.1.0",
+    "@ai-repeat/security": "0.1.0",
+    "playwright-core": "^1.56.0",
+    "zod": "^4.0.0"
+  }
+}
