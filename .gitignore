@@ -7,4 +7,6 @@ apps/desktop/.session-token
 apps/desktop/src-tauri/target/
 apps/desktop/src-tauri/binaries/*.exe
 *.log
+.claude/
+*.tsbuildinfo
 .DS_Store
