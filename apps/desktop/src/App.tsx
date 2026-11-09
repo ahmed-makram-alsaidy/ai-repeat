@@ -11,6 +11,7 @@ import { buildTaskSummaryText, speak, ttsAvailable, voiceFlags } from "./lib/voi
 import { notifyTask } from "./lib/notify.js";
 import ErrorBoundary from "./components/ErrorBoundary.js";
 import { t, applyDirection, type Lang, type StringKey } from "./lib/i18n.js";
+import { IconHome, IconAssistant, IconTeach, IconSkills, IconTasks, IconLogs, IconSettings, IconStop } from "./components/Icons.js";
 import type { TaskEvent } from "./types.js";
 
 type PageKey = "home" | "assistant" | "teach" | "skills" | "tasks" | "logs" | "settings";
@@ -160,31 +161,29 @@ export default function App() {
     <AppErrorBoundary>
     <Ctx.Provider value={state}>
       <div className="app">
-        <nav className="sidebar" aria-label="التنقل الرئيسي">
-          <div className="brand">AI Repeat</div>
-          {NAV.map((n) => (
-            <button key={n.key} className={page === n.key ? "active" : ""} onClick={() => setPage(n.key)}>
-              {t(lang, n.label as StringKey)}
-            </button>
-          ))}
+        <nav className="sidebar" aria-label="Navigation">
+          <div className="sidebar-brand">
+            <div className="sidebar-brand-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <div className="sidebar-brand-text">AI Repeat</div>
+          </div>
+          <div className="sidebar-nav">
+          {NAV.map((n) => {
+            const Icon = { home: IconHome, assistant: IconAssistant, teach: IconTeach, skills: IconSkills, tasks: IconTasks, logs: IconLogs, settings: IconSettings }[n.key];
+            return (
+              <button key={n.key} className={`sidebar-nav-btn${page === n.key ? " active" : ""}`} onClick={() => setPage(n.key)}>
+                {Icon && <Icon className="sidebar-nav-icon" />}
+                {t(lang, n.label)}
+              </button>
+            );
+          })}
+          </div>
           <div className="spacer" />
-          <button
-            className="danger"
-            style={{ margin: "6px 4px" }}
-            onClick={async () => {
-              try {
-                const r = await api.stopAllTasks();
-                await refresh();
-                if (r.cancelledActive > 0) window.alert(`تم إيقاف ${r.cancelledActive} مهمة فورًا.`);
-              } catch {
-                /* best effort */
-              }
-            }}
-            title="يوقف كل المهام الشغالة والمعلقة فورًا (FR-05)"
-          >
-            ⛔ إيقاف الكل
-          </button>
-          <div className="status">{connected ? t(lang, "nav.connected") : t(lang, "nav.disconnected")}</div>
+          <div className="sidebar-footer">
+            <button className="sidebar-stop-btn" onClick={async () => { try { const r = await api.stopAllTasks(); await refresh(); if (r.cancelledActive > 0) window.alert(`تم إيقاف ${r.cancelledActive} مهمة فورًا.`); } catch {} }} title="FR-05">
+              <IconStop className="sidebar-nav-icon" /> {t(lang, "nav.stopAll")}
+            </button>
+            <div className="sidebar-status"><span className={`sidebar-status-dot ${connected ? "online" : "offline"}`} /> {connected ? t(lang, "nav.connected") : t(lang, "nav.disconnected")}</div>
+          </div>
         </nav>
         <main className="main">
           {error && <div className="notice bad">خطأ في الاتصال بالخدمة المحلية: {error}</div>}
