@@ -6,6 +6,15 @@ interface TauriInternals {
   invoke: (cmd: string) => Promise<unknown>;
 }
 
+/**
+ * Inside the Tauri shell the page origin is tauri.localhost, and the custom
+ * protocol answers every unknown path with index.html — a relative "/api/*"
+ * fetch would silently return the SPA shell instead of agent JSON. Call the
+ * loopback agent directly. Dev mode keeps relative URLs (Vite proxies /api).
+ */
+const IS_TAURI = typeof window !== "undefined" && Boolean((window as unknown as { __TAURI_INTERNALS__?: TauriInternals }).__TAURI_INTERNALS__);
+const API_BASE = IS_TAURI ? "http://127.0.0.1:8757" : "";
+
 export async function initToken(): Promise<void> {
   if (token) return;
   // Desktop shell (Tauri): the session token arrives via IPC — never the network.
@@ -40,7 +49,7 @@ export class ApiError extends Error {
 }
 
 async function call<T>(path: string, init?: RequestInit & { raw?: boolean }): Promise<T> {
-  const res = await fetch(path, {
+  const res = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
@@ -55,14 +64,14 @@ async function call<T>(path: string, init?: RequestInit & { raw?: boolean }): Pr
 
 /** Raw-text GET (artifacts like CSV) — no JSON parsing. */
 async function callText(path: string): Promise<string> {
-  const res = await fetch(path, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+  const res = await fetch(`${API_BASE}${path}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
   if (!res.ok) throw new ApiError(res.statusText, res.status);
   return res.text();
 }
 
 /** Sandbox-checked artifact URL inside the approved workspace. */
 function artifactUrlFor(relPath: string): string {
-  return token ? `/api/artifacts?path=${encodeURIComponent(relPath)}&token=${encodeURIComponent(token)}` : `/api/artifacts?path=${encodeURIComponent(relPath)}`;
+  return token ? `${API_BASE}/api/artifacts?path=${encodeURIComponent(relPath)}&token=${encodeURIComponent(token)}` : `${API_BASE}/api/artifacts?path=${encodeURIComponent(relPath)}`;
 }
 
 /* --------------------------------- types ---------------------------------- */
@@ -179,7 +188,7 @@ export const api = {
       method: "PATCH",
       body: JSON.stringify(cfg),
     }),
-  backupUrl: () => (token ? `/api/backup?token=${encodeURIComponent(token)}` : "/api/backup"),
+  backupUrl: () => (token ? `${API_BASE}/api/backup?token=${encodeURIComponent(token)}` : `${API_BASE}/api/backup`),
   restoreBackup: (bundle: unknown) =>
     call<{ ok: boolean; workflows: number; tasks: number; schedules: number; renamed: string[] }>("/api/backup/restore", {
       method: "POST",
@@ -197,7 +206,7 @@ export const api = {
   pendingApprovals: () => call<{ approvals: ApprovalView[] }>("/api/approvals/pending"),
   resolveApproval: (id: string, action: "approve" | "reject", fingerprint?: string) =>
     call<{ ok: boolean }>(`/api/approvals/${id}/${action}`, { method: "POST", body: JSON.stringify({ fingerprint }) }),
-  logsExportUrl: () => (token ? `/api/logs/export?token=${encodeURIComponent(token)}` : "/api/logs/export"),
+  logsExportUrl: () => (token ? `${API_BASE}/api/logs/export?token=${encodeURIComponent(token)}` : `${API_BASE}/api/logs/export`),
   teachStart: (startUrl: string) =>
     call<{ status: { active: boolean; url?: string; message: string } }>("/api/teach/start", {
       method: "POST",
@@ -214,7 +223,7 @@ export const api = {
     const copy = { ...(wf.workflow as Record<string, unknown>), id: `${id}_copy_${Date.now().toString(36)}` };
     return call<{ ok: boolean; id: string }>("/api/workflows", { method: "POST", body: JSON.stringify(copy) });
   },
-  exportWorkflowUrl: (id: string) => (token ? `/api/workflows/${id}/export?token=${encodeURIComponent(token)}` : `/api/workflows/${id}/export`),
+  exportWorkflowUrl: (id: string) => (token ? `${API_BASE}/api/workflows/${id}/export?token=${encodeURIComponent(token)}` : `${API_BASE}/api/workflows/${id}/export`),
   workflowVersions: (id: string) => call<{ versions: Array<{ version: number; createdAt: string }> }>(`/api/workflows/${id}/versions`),
   restoreWorkflowVersion: (id: string, version: number) =>
     call<{ ok: boolean; restoredFrom: number }>(`/api/workflows/${id}/restore`, { method: "POST", body: JSON.stringify({ version }) }),
@@ -252,5 +261,5 @@ export const api = {
 
 /** SSE events with token in the query string (EventSource cannot set headers). */
 export function eventStreamUrl(): string {
-  return token ? `/api/events?token=${encodeURIComponent(token)}` : "/api/events";
+  return token ? `${API_BASE}/api/events?token=${encodeURIComponent(token)}` : `${API_BASE}/api/events`;
 }

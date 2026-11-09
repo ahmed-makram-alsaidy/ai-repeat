@@ -77,19 +77,19 @@ export default function Home({ lang }: { lang: Lang }) {
           <b>{boot?.workflows?.length ?? 0}</b>
           <span>{t(lang, "home.kpi.skills")}</span>
         </div>
-        {boot?.kpis.verifiedSuccessRate != null && (
+        {boot?.kpis?.verifiedSuccessRate != null && (
           <div className="metric">
             <b>{Math.round(boot.kpis.verifiedSuccessRate * 100)}%</b>
             <span>{t(lang, "home.kpi.verifiedRate")}</span>
           </div>
         )}
-        {boot?.kpis.avgRunSeconds != null && (
+        {boot?.kpis?.avgRunSeconds != null && (
           <div className="metric">
             <b>{boot.kpis.avgRunSeconds < 90 ? `${Math.round(boot.kpis.avgRunSeconds)}ث` : `${(boot.kpis.avgRunSeconds / 60).toFixed(1)}د`}</b>
             <span>{t(lang, "home.kpi.avgRun")}</span>
           </div>
         )}
-        {boot?.kpis.tokensPerVerifiedRun != null && (
+        {boot?.kpis?.tokensPerVerifiedRun != null && (
           <div className="metric">
             <b>{Math.round(boot.kpis.tokensPerVerifiedRun).toLocaleString("ar-EG")}</b>
             <span>{t(lang, "home.kpi.tokensPerRun")}</span>

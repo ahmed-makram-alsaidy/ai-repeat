@@ -69,10 +69,35 @@ export function createServer(deps: ServerDeps) {
   const tokenPath = path.join(deps.settings.dataDir, "session-token");
   writeFileSync(tokenPath, token, "utf8");
 
-  const LOCAL_HOSTS = new Set(["127.0.0.1", "localhost", "[::1]", "::1"]);
+  const LOCAL_HOSTS = new Set(["127.0.0.1", "localhost", "[::1]", "::1", "tauri.localhost"]);
+
+  // CORS: the packaged Tauri UI (origin http(s)://tauri.localhost) calls the
+  // loopback agent cross-origin; dev UI on :5173 goes through the Vite proxy
+  // (same-origin). Reflect only loopback/Tauri origins — the bearer token
+  // remains the actual gate.
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (origin) {
+      try {
+        if (LOCAL_HOSTS.has(new URL(origin).hostname)) {
+          res.setHeader("Access-Control-Allow-Origin", origin);
+          res.setHeader("Vary", "Origin");
+        }
+      } catch {
+        /* malformed origin — no CORS headers */
+      }
+    }
+    if (req.method === "OPTIONS") {
+      res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,PUT,DELETE,OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "authorization,content-type");
+      res.status(204).end();
+      return;
+    }
+    next();
+  });
 
   const auth = (req: Request, res: Response, next: NextFunction) => {
-    // Origin check for browser clients (dev UI on :5173, prod UI same-origin).
+    // Origin check for browser clients (dev UI on :5173, packaged UI tauri.localhost).
     const origin = req.headers.origin;
     if (origin) {
       try {
