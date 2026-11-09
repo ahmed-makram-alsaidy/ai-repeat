@@ -4,38 +4,44 @@
    Palette: Slate navy sidebar · Soft blue-grey content · Teal accent
    ═══════════════════════════════════════════════════════════════ */
 
-/* Qatar2022 Arabic — loaded from the device's installed fonts (no network) */
+/* Qatar2022 Arabic — bundled with the app (public/fonts), uses the device's
+   installed copy first when available. No network fonts. */
 @font-face {
   font-family: 'Qatar2022 Arabic';
-  src: local('Qatar2022 Arabic Thin');
+  src: local('Qatar2022 Arabic Thin'),
+       url('/fonts/Qatar2022Arabic-Thin.otf') format('opentype');
   font-weight: 200;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Qatar2022 Arabic';
-  src: local('Qatar2022 Arabic Book');
+  src: local('Qatar2022 Arabic Book'),
+       url('/fonts/Qatar2022Arabic-Book.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Qatar2022 Arabic';
-  src: local('Qatar2022 Arabic Medium');
+  src: local('Qatar2022 Arabic Medium'),
+       url('/fonts/Qatar2022Arabic-Medium.otf') format('opentype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Qatar2022 Arabic';
-  src: local('Qatar2022 Arabic Bold');
+  src: local('Qatar2022 Arabic Bold'),
+       url('/fonts/Qatar2022Arabic-Bold.otf') format('opentype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Qatar2022 Arabic';
-  src: local('Qatar2022 Arabic Heavy');
+  src: local('Qatar2022 Arabic Heavy'),
+       url('/fonts/Qatar2022Arabic-Heavy.otf') format('opentype');
   font-weight: 900;
   font-style: normal;
   font-display: swap;
