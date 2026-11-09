@@ -1,5 +1,5 @@
 import { Component, createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { api, eventStreamUrl, initToken, type ApprovalView, type Bootstrap } from "./api.js";
+import { api, eventStreamUrl, waitForAgent, type ApprovalView, type Bootstrap } from "./api.js";
 import Home from "./pages/Home.js";
 import Assistant from "./pages/Assistant.js";
 import Teach from "./pages/Teach.js";
@@ -94,7 +94,7 @@ export default function App() {
 
   useEffect(() => {
     void (async () => {
-      await initToken();
+      await waitForAgent();
       await refresh();
       const es = new EventSource(eventStreamUrl());
       es.onopen = () => setConnected(true);

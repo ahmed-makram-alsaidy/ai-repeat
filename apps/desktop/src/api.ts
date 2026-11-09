@@ -48,6 +48,30 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Cold-start helper: the sidecar (a ~100 MB Node SEA) takes seconds to boot and
+ * rewrites session-token on every start — a token read too early is stale and
+ * yields 401s forever. Poll until the agent answers a real bootstrap (clearing
+ * a stale cached token on 401 so the next round re-reads the file) or the
+ * deadline passes.
+ */
+export async function waitForAgent(maxMs = 20_000): Promise<boolean> {
+  const deadline = Date.now() + maxMs;
+  for (;;) {
+    await initToken();
+    if (token) {
+      try {
+        await call<Bootstrap>("/api/bootstrap");
+        return true;
+      } catch (e) {
+        if (e instanceof ApiError && e.status === 401) token = null; // stale file — re-read next round
+      }
+    }
+    if (Date.now() >= deadline) return false;
+    await new Promise((r) => setTimeout(r, 750));
+  }
+}
+
 async function call<T>(path: string, init?: RequestInit & { raw?: boolean }): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     ...init,

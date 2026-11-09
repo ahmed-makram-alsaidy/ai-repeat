@@ -1,7 +1,7 @@
 {
   "name": "ai-repeat",
   "private": true,
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Arabic-first local AI coworker that teaches recurring browser tasks and re-runs them with deterministic verification",
   "type": "module",
   "workspaces": [
