@@ -90,6 +90,11 @@ export function createServer(deps: ServerDeps) {
     if (req.method === "OPTIONS") {
       res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,PUT,DELETE,OPTIONS");
       res.setHeader("Access-Control-Allow-Headers", "authorization,content-type");
+      // Chrome Private Network Access: https://tauri.localhost → http://127.0.0.1
+      // requires an explicit opt-in or the preflight is rejected.
+      if (req.headers["access-control-request-private-network"] === "true") {
+        res.setHeader("Access-Control-Allow-Private-Network", "true");
+      }
       res.status(204).end();
       return;
     }
