@@ -1,14 +1,49 @@
 /* ═══════════════════════════════════════════════════════════════
    AI Repeat — Professional Design System
-   Font: Cairo (Arabic) + Segoe UI Variable (Latin)
+   Font: Qatar2022 Arabic (local device font) + Segoe UI Variable (Latin)
    Palette: Slate navy sidebar · Soft blue-grey content · Teal accent
    ═══════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+/* Qatar2022 Arabic — loaded from the device's installed fonts (no network) */
+@font-face {
+  font-family: 'Qatar2022 Arabic';
+  src: local('Qatar2022 Arabic Thin');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Qatar2022 Arabic';
+  src: local('Qatar2022 Arabic Book');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Qatar2022 Arabic';
+  src: local('Qatar2022 Arabic Medium');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Qatar2022 Arabic';
+  src: local('Qatar2022 Arabic Bold');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Qatar2022 Arabic';
+  src: local('Qatar2022 Arabic Heavy');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   /* Typography */
-  --font-ar: 'Cairo', 'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
+  --font-ar: 'Qatar2022 Arabic', 'Cairo', 'Segoe UI', Tahoma, sans-serif;
   --font-en: 'Segoe UI Variable', 'Segoe UI', 'Inter', system-ui, sans-serif;
   --font-mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
 
