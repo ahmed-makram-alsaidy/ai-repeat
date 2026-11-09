@@ -194,6 +194,8 @@ export const api = {
       error?: string;
       usage?: { inputTokens?: number } | null;
     }>("/api/plan", { method: "POST", body: JSON.stringify({ text }) }),
+  draftFromPlan: (text: string) =>
+    call<{ draft?: string; error?: string }>("/api/workflows/draft-from-plan", { method: "POST", body: JSON.stringify({ text }) }),
   workflows: () => call<{ workflows: Array<{ id: string; version: number; workflow: unknown; updatedAt: string }> }>("/api/workflows"),
   workflowJson: (id: string) => call<{ workflows: Array<{ id: string; workflow: unknown }> }>("/api/workflows"),
   runWorkflow: (workflowId: string, inputs: Record<string, string>) =>

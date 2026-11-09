@@ -1,6 +1,6 @@
 [package]
 name = "ai-repeat-desktop"
-version = "0.1.4"
+version = "0.1.5"
 license = "MIT"
 description = "AI Repeat — Arabic-first desktop shell for the local agent service"
 edition = "2021"

@@ -85,10 +85,7 @@ export default function SettingsPage({ lang }: { lang: Lang }) {
     setErr(null);
     try {
       setInstallState({ installing: true, percent: 0 });
-      await fetch("/api/browser/install", { method: "POST", headers: { "Content-Type": "application/json" } }).then(async (r) => {
-        const j = (await r.json()) as { error?: string };
-        if (j.error) throw new Error(j.error);
-      });
+      await api.installBrowser();
     } catch (e) {
       setInstallState({ installing: false });
       setErr(e instanceof Error ? e.message : String(e));

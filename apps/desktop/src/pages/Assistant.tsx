@@ -81,13 +81,8 @@ export default function Assistant({ lang }: { lang: Lang }) {
     setDraftBusy(true);
     setRunErr(null);
     try {
-      const res = await fetch("/api/workflows/draft-from-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
-      });
-      const body = (await res.json()) as { draft?: string; error?: string };
-      if (!res.ok || body.error) throw new Error(body.error ?? res.statusText);
+      const body = await api.draftFromPlan(text);
+      if (body.error) throw new Error(body.error);
       const parsed = parseDraft(body.draft!);
       if (!parsed.ok) throw new Error(parsed.error);
       setDraftWf(parsed.wf);
