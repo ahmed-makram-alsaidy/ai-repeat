@@ -10,3 +10,8 @@ apps/desktop/src-tauri/binaries/*.exe
 .claude/
 *.tsbuildinfo
 .DS_Store
+
+# local agent test data
+.agent-test-*/
+.local-dev/
+build/
