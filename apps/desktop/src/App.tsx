@@ -172,7 +172,7 @@ export default function App() {
             return (
               <button key={n.key} className={`sidebar-nav-btn${page === n.key ? " active" : ""}`} onClick={() => setPage(n.key)}>
                 {Icon && <Icon className="sidebar-nav-icon" />}
-                {t(lang, n.label)}
+                {t(lang, n.label as StringKey)}
               </button>
             );
           })}
